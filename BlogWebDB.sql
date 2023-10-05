@@ -1,0 +1,143 @@
+CREATE DATABASE BlogWebDB;
+USE BlogWebDB;
+
+CREATE TABLE `Notification`(
+    `id` BINARY(16) NOT NULL,
+    `ownerId` BINARY(16) NOT NULL,
+    `type` VARCHAR(50) NOT NULL,
+    `text` LONGTEXT NOT NULL,
+    `isChecked` TINYINT NOT NULL DEFAULT 0,
+    `url` BINARY(16) NULL,
+    `createdTime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `modifiedTime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+ALTER TABLE
+    `Notification` ADD PRIMARY KEY(`id`);
+CREATE TABLE `Comment`(
+    `id` BINARY(16) NOT NULL,
+    `ownerId` BINARY(16) NOT NULL,
+    `blogId` BINARY(16) NOT NULL,
+    `commentId` BINARY(16),
+    `text` LONGTEXT NOT NULL,
+    `isDeleted` TINYINT NOT NULL DEFAULT 0,
+    `createdTime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `modifiedTime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+ALTER TABLE
+    `Comment` ADD PRIMARY KEY(`id`);
+CREATE TABLE `Saved`(
+    `id` BINARY(16) NOT NULL,
+    `ownerId` BINARY(16) NOT NULL,
+    `blogId` BINARY(16) NOT NULL,
+    `createdTime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `modifiedTime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+ALTER TABLE
+    `Saved` ADD PRIMARY KEY(`id`);
+CREATE TABLE `Category`(
+    `id` BINARY(16) NOT NULL,
+    `name` MEDIUMTEXT NOT NULL,
+    `desc` LONGTEXT NOT NULL,
+    `isDeleted` TINYINT NOT NULL DEFAULT 0,
+    `createdTime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `modifiedTime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+ALTER TABLE
+    `Category` ADD PRIMARY KEY(`id`);
+
+CREATE TABLE `Reaction`(
+    `id` BINARY(16) NOT NULL,
+    `ownerId` BINARY(16) NOT NULL,
+    `blogId` BINARY(16) NOT NULL,
+    `createdTime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `modifiedTime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+ALTER TABLE
+    `Reaction` ADD PRIMARY KEY(`id`);
+CREATE TABLE `Blog`(
+    `id` BINARY(16) NOT NULL,
+    `ownerId` BINARY(16) NOT NULL,
+    `categoryId` BINARY(16) NOT NULL,
+    `title` MEDIUMTEXT NOT NULL,
+    `text` LONGTEXT NOT NULL,
+    `thumbnail` VARCHAR(255) NOT NULL,
+    `isDeleted` TINYINT NOT NULL DEFAULT 0,
+    `createdTime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `modifiedTime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+ALTER TABLE
+    `Blog` ADD PRIMARY KEY(`id`);
+CREATE TABLE `User`(
+    `id` BINARY(16) NOT NULL, 
+    `email` VARCHAR(100) NOT NULL,
+    `password` VARCHAR(255) NOT NULL,
+    `lastname` VARCHAR(50) NOT NULL,
+    `firstname` VARCHAR(50) NOT NULL,
+    `bio` LONGTEXT,
+    `avatar` VARCHAR(255) NOT NULL,
+    `isEnable` TINYINT NOT NULL DEFAULT 0,
+    `isDeleted` TINYINT NOT NULL DEFAULT 0,
+    `createdTime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `modifiedTime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+ALTER TABLE
+    `User` ADD PRIMARY KEY(`id`);
+    
+CREATE TABLE `Image`(
+    `id` BINARY(16) NOT NULL,
+	`blogId` BINARY(16) NOT NULL,
+    `filename` VARCHAR(255) NOT NULL,
+    `createdTime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `modifiedTime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+ALTER TABLE
+    `Image` ADD PRIMARY KEY(`id`);
+    
+CREATE TABLE `Role`(
+    `id` BINARY(16) NOT NULL,
+	`name` VARCHAR(255) NOT NULL,
+    `createdTime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `modifiedTime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+ALTER TABLE
+    `Role` ADD PRIMARY KEY(`id`);
+
+CREATE TABLE `UserRole`(
+    `id` BINARY(16) NOT NULL,
+	`userId` BINARY(16) NOT NULL,
+    `roleId` BINARY(16) NOT NULL,
+    `createdTime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `modifiedTime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+ALTER TABLE
+    `UserRole` ADD PRIMARY KEY(`id`);
+
+ALTER TABLE
+    `User` ADD UNIQUE `user_email_unique`(`email`);
+ALTER TABLE
+    `Blog` ADD CONSTRAINT `blog_ownerid_foreign` FOREIGN KEY(`ownerId`) REFERENCES `User`(`id`);
+ALTER TABLE
+    `Comment` ADD CONSTRAINT `comment_ownerid_foreign` FOREIGN KEY(`ownerId`) REFERENCES `User`(`id`);
+ALTER TABLE
+    `Reaction` ADD CONSTRAINT `reaction_ownerid_foreign` FOREIGN KEY(`ownerId`) REFERENCES `User`(`id`);
+ALTER TABLE
+    `Saved` ADD CONSTRAINT `saved_ownerid_foreign` FOREIGN KEY(`ownerId`) REFERENCES `User`(`id`);
+ALTER TABLE
+    `Reaction` ADD CONSTRAINT `reaction_blogid_foreign` FOREIGN KEY(`blogId`) REFERENCES `Blog`(`id`);
+ALTER TABLE
+    `Notification` ADD CONSTRAINT `notification_ownerid_foreign` FOREIGN KEY(`ownerId`) REFERENCES `User`(`id`);
+ALTER TABLE
+    `Comment` ADD CONSTRAINT `comment_commentid_foreign` FOREIGN KEY(`commentId`) REFERENCES `Comment`(`id`);
+ALTER TABLE
+    `Blog` ADD CONSTRAINT `blog_categoryid_foreign` FOREIGN KEY(`categoryId`) REFERENCES `Category`(`id`);
+ALTER TABLE
+    `Comment` ADD CONSTRAINT `comment_blogid_foreign` FOREIGN KEY(`blogId`) REFERENCES `Blog`(`id`);
+ALTER TABLE
+    `Saved` ADD CONSTRAINT `saved_blogid_foreign` FOREIGN KEY(`blogId`) REFERENCES `Blog`(`id`);
+ALTER TABLE
+    `Image` ADD CONSTRAINT `image_blogid_foreign` FOREIGN KEY(`blogId`) REFERENCES `Blog`(`id`);
+ALTER TABLE
+    `UserRole` ADD CONSTRAINT `userrole_userid_foreign` FOREIGN KEY(`userId`) REFERENCES `User`(`id`);
+ALTER TABLE
+    `UserRole` ADD CONSTRAINT `userrole_roleid_foreign` FOREIGN KEY(`roleId`) REFERENCES `Role`(`id`); 
+ 
