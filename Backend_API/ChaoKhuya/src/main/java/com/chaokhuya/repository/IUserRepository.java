@@ -13,5 +13,6 @@ import com.chaokhuya.model.User;
 @Repository
 public interface IUserRepository extends JpaRepository<User, UUID> {
 	Optional<User> findByEmail(String email);
+//	Page<User> findByUsername(String userName, Pageable pageable);
 //	Page<User> findAll(Pageable pageable);
 }

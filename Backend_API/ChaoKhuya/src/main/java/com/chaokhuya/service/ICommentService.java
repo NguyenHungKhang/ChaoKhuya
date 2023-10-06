@@ -10,9 +10,9 @@ import com.chaokhuya.payload.PageResponse;
 
 public interface ICommentService {
 	List<CommentDto> getAll();
-	PageResponse<CommentDto> getByBlog(UUID blogId, int page, int size);
-	PageResponse<CommentDto> getByOwner(UUID blogId, int page, int size);
-	PageResponse<CommentDto> getByComment(UUID blogId, int page, int size);
+	PageResponse<CommentDto> getParentCommentByBlog(UUID blogId, int page, int size);
+	PageResponse<CommentDto> getByOwner(UUID ownerId, int page, int size);
+	PageResponse<CommentDto> getReplyCommentByComment(UUID commentId, int page, int size);
 	CommentDto add(CommentDto commentDto, UUID blogId, UUID ownerId);
 	CommentDto reply(CommentDto commentDto, UUID blogId, UUID ownerId, UUID commentId);
 	CommentDto update(CommentDto commentDto, UUID id);

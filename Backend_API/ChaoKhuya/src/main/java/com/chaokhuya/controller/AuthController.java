@@ -67,8 +67,4 @@ public class AuthController {
 		return new ResponseEntity<UserDto>(newUser,HttpStatus.OK);
 	}
 	
-	@GetMapping("/")
-	public ResponseEntity<ApiResponse> test(){
-		return new ResponseEntity<ApiResponse>(new ApiResponse("Test Successfully",true),HttpStatus.OK);
-	}
 }

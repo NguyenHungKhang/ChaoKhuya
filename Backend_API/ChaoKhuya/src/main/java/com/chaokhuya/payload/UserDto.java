@@ -23,5 +23,5 @@ public class UserDto {
 	private Boolean isDeleted = false;
 	private Timestamp createdTime;
 	private Timestamp modifiedTime;
-	private Set<RoleDto> roleDtos = new HashSet<>();
+	private Set<RoleDto> roles = new HashSet<>();
 }

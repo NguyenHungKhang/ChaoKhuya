@@ -6,11 +6,16 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.chaokhuya.model.Blog;
 import com.chaokhuya.model.Comment;
 import com.chaokhuya.model.User;
+import com.chaokhuya.payload.BlogDto;
 import com.chaokhuya.payload.CommentDto;
 import com.chaokhuya.payload.PageResponse;
 import com.chaokhuya.repository.IBlogRepository;
@@ -97,21 +102,33 @@ public class CommentService implements ICommentService{
 	}
 
 	@Override
-	public PageResponse<CommentDto> getByBlog(UUID blogId, int page, int size) {
-		// TODO Auto-generated method stub
-		return null;
+	public PageResponse<CommentDto> getParentCommentByBlog(UUID blogId, int page, int size) {
+		Sort sort = Sort.by("createdtTime").descending();
+		Pageable pageable = PageRequest.of(page, size, sort);
+		Page<Comment> commentList = commentRepository.findParentCommentByBlog(blogId, pageable);
+		List<CommentDto> commentDtoList = commentList.stream().map((comment) -> this.CommentToDto(comment)).collect(Collectors.toList());
+		return new PageResponse<>(commentDtoList, commentList.getNumber(), commentList.getSize(), commentList.getTotalElements(),
+				commentList.getTotalPages(), commentList.isLast());
 	}
 
 	@Override
-	public PageResponse<CommentDto> getByOwner(UUID blogId, int page, int size) {
-		// TODO Auto-generated method stub
-		return null;
+	public PageResponse<CommentDto> getByOwner(UUID ownerId, int page, int size) {
+		Sort sort = Sort.by("createdtTime").descending();
+		Pageable pageable = PageRequest.of(page, size, sort);
+		Page<Comment> commentList = commentRepository.findByOwner(ownerId, pageable);
+		List<CommentDto> commentDtoList = commentList.stream().map((comment) -> this.CommentToDto(comment)).collect(Collectors.toList());
+		return new PageResponse<>(commentDtoList, commentList.getNumber(), commentList.getSize(), commentList.getTotalElements(),
+				commentList.getTotalPages(), commentList.isLast());
 	}
 
 	@Override
-	public PageResponse<CommentDto> getByComment(UUID blogId, int page, int size) {
-		// TODO Auto-generated method stub
-		return null;
+	public PageResponse<CommentDto> getReplyCommentByComment(UUID commentId, int page, int size) {
+		Sort sort = Sort.by("createdtTime").descending();
+		Pageable pageable = PageRequest.of(page, size, sort);
+		Page<Comment> commentList = commentRepository.findByComment(commentId, pageable);
+		List<CommentDto> commentDtoList = commentList.stream().map((comment) -> this.CommentToDto(comment)).collect(Collectors.toList());
+		return new PageResponse<>(commentDtoList, commentList.getNumber(), commentList.getSize(), commentList.getTotalElements(),
+				commentList.getTotalPages(), commentList.isLast());
 	}
-	
+
 }
